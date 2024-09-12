@@ -5,9 +5,11 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -18,18 +20,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\Email()]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
     /**
      * @var string The hashed password
      */
+    #[Assert\NotBlank()]
     #[ORM\Column]
     private ?string $password = null;
 
+    #[Assert\NotBlank()]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $username = null;
 
+    #[Assert\NotBlank()]
     #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'users')]
     private Collection $roles;
 
@@ -102,7 +108,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Role>
+     * @return array
      */
     public function getRoles(): array
     {
@@ -110,6 +116,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->roles->map(function ($role) {
             return $role->getName();
         })->toArray();
+    }
+
+    /**
+     * @param array $roleNames
+     * @return void
+     */
+    public function setRoles(array $roleNames, EntityManagerInterface $entityManager): void
+    {
+        $roles = $entityManager->getRepository(Role::class)->findBy(['name' => $roleNames]);
+
+        $this->roles = new ArrayCollection($roles);
     }
 
     public function addRole(Role $role): static
