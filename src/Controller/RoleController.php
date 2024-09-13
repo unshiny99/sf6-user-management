@@ -33,6 +33,24 @@ class RoleController extends AbstractController
         return new JsonResponse($serializedRoles);
     }
 
+    #[Route('/{id}', name: 'app_role_show', methods: ['GET'])]
+    public function getRoleById($id, EntityManagerInterface $entityManagerInterface): JsonResponse
+    {
+        $role = $entityManagerInterface->getRepository(role::class)->find($id);
+
+        if(! $role) {
+            return new JsonResponse(['error' => 'Role not found'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $serializedRole = [
+            'id' => $role->getId(),
+            'name' => $role->getName(),
+            'permissions' => $role->getPermissions(),
+        ];
+
+        return new JsonResponse($serializedRole);
+    }
+
     #[Route('', name: 'app_role_create', methods: ['POST'])]
     public function createRole(Request $request, EntityManagerInterface $entityManagerInterface, ValidatorInterface $validator): JsonResponse
     {
@@ -75,7 +93,7 @@ class RoleController extends AbstractController
         $role = $entityManagerInterface->getRepository(Role::class)->find($id);
 
         if (! $role) {
-            throw $this->createNotFoundException('Role not found.');
+            return new JsonResponse(['error' => 'Role not found'], Response::HTTP_BAD_REQUEST);
         }
  
         $data = $request->toArray();

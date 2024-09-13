@@ -1,9 +1,461 @@
 nelmio_api_doc:
     documentation:
         info:
-            title: My App
-            description: This is an awesome app!
+            title: User manager
+            description: Role and permissions management for users
             version: 1.0.0
+
+        components:
+            schemas:
+                User:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                        email:
+                            type: string
+                        username:
+                            type: string
+                        password:
+                            type: string
+                    example:
+                        id: 1
+                        email: john.doe@example.com
+                        username: johndoe
+                        password: "$2y$13$.w0ylhteC1V5YxE9lltZYu20BO2Mj8llAHyA/G7wHG1qEPjr2H88K"
+                User2:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                        email:
+                            type: string
+                        username:
+                            type: string
+                        password:
+                            type: string
+                    example:
+                        id: 2
+                        email: mike.tyson@example.com
+                        username: mikeyyy
+                        password: "$2y$13$qa8egUBHFKHsMpGo9X2fq..p8bvwb.LfTqNDi31TeunvVr41ZxwJy"
+                Users:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/User'
+                    example:
+                      - id: 1
+                        email: john.doe@example.com
+                        username: johndoe
+                        password: "$2y$13$.w0ylhteC1V5YxE9lltZYu20BO2Mj8llAHyA/G7wHG1qEPjr2H88K"
+                      - id: 2
+                        email: mike.tyson@example.com
+                        username: mikeyyy
+                        password: "$2y$13$qa8egUBHFKHsMpGo9X2fq..p8bvwb.LfTqNDi31TeunvVr41ZxwJy"
+                UserPayload:
+                    type: object
+                    required: [email, username, password]
+                    properties:
+                        email:
+                            type: string
+                        username:
+                            type: string
+                        password:
+                            type: string
+                    example:
+                        email: john.doe@example.com
+                        username: johndoe
+                        password: "1234"
+
+                Role:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                        name:
+                            type: string
+                    example:
+                        id: 1
+                        name: ROLE_ADMIN
+                Role2:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                        name:
+                            type: string
+                    example:
+                        id: 2
+                        name: ROLE_USER
+                Roles:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Role'
+                    example:
+                      - id: 1
+                        name: ROLE_ADMIN
+                      - id: 2
+                        name: ROLE_USER
+                RolePayload:
+                    type: object
+                    required: [name]
+                    properties:
+                        name:
+                            type: string
+                    example:
+                        name: ROLE_ADMIN
+
+                Permission:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                        name:
+                            type: string
+                    example:
+                        id: 1
+                        name: PERMISSION_READ
+                Permission2:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                        name:
+                            type: string
+                    example:
+                        id: 2
+                        name: PERMISSION_CREATE
+                Permissions:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Permission'
+                    example:
+                      - id: 1
+                        name: PERMISSION_READ
+                      - id: 2
+                        name: PERMISSION_CREATE
+                PermissionPayload:
+                    type: object
+                    required: [name]
+                    properties:
+                        name:
+                            type: string
+                    example:
+                        name: PERMISSION_READ
+
+        paths: 
+            /api/users:
+                get:
+                    summary: Get a list of users
+                    tags:
+                        - Users
+                    responses:
+                        '200':
+                            description: Successful response
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: '#/components/schemas/Users'
+                post:
+                    summary: Create a new user
+                    tags:
+                        - Users
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: '#/components/schemas/UserPayload'
+
+                    responses:
+                        '201':
+                            description: User created successfully
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: '#/components/schemas/User'
+                        '400':
+                            description: One of the required parameter is missing, or the entity cannot be found.
+                        '409':
+                            description: An user with that username or email already exists.
+
+
+            /api/users/{id}:
+                get:
+                    summary: Get a user by ID
+                    tags:
+                        - Users
+                    parameters:
+                      - name: id
+                        in: path
+                        required: true
+                        schema:
+                            type: integer
+                    responses:
+                        '200':
+                            description: Successful response
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: '#/components/schemas/User'
+
+                put:
+                    summary: Update a user
+                    tags:
+                        - Users
+                    parameters:
+                      - name: id
+                        in: path
+                        required: true
+                        schema:
+                            type: integer
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: '#/components/schemas/UserPayload'
+                    responses:
+                        '200':
+                            description: User updated successfully
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: '#/components/schemas/User'
+                        '400':
+                            description: One of the required parameter is missing, or the entity cannot be found.
+                        '409':
+                            description: An user with that username or email already exists.
+                            
+                delete:
+                    summary: Delete a user
+                    tags:
+                        - Users
+                    parameters:
+                      - name: id
+                        in: path
+                        required: true
+                        schema:
+                            type: integer
+                    responses:
+                        '204':
+                            description: User deleted successfully
+                        '403':
+                            description: Current user don't have the permission to do this action
+                        '404':
+                            description: The user cannot be found
+
+            /api/roles:
+                get:
+                    summary: Get a list of roles
+                    tags:
+                        - Roles
+                    responses:
+                        '200':
+                            description: Successful response
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: '#/components/schemas/Roles'
+                post:
+                    summary: Create a new role
+                    tags:
+                        - Roles
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: '#/components/schemas/RolePayload'
+
+                    responses:
+                        '201':
+                            description: Role created successfully
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: '#/components/schemas/Role'
+                        '400':
+                            description: The name of the role is missing.
+                        '409':
+                            description: A role with that name already exists.
+
+            /api/roles/{id}:
+                get:
+                    summary: Get a role by ID
+                    tags:
+                        - Roles
+                    parameters:
+                      - name: id
+                        in: path
+                        required: true
+                        schema:
+                            type: integer
+                    responses:
+                        '200':
+                            description: Successful response
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: '#/components/schemas/Role'
+
+                put:
+                    summary: Update a role
+                    tags:
+                        - Roles
+                    parameters:
+                      - name: id
+                        in: path
+                        required: true
+                        schema:
+                            type: integer
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: '#/components/schemas/RolePayload'
+                    responses:
+                        '200':
+                            description: Role updated successfully
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: '#/components/schemas/Role'
+                        '400':
+                            description: One of the required parameter is missing, or the entity cannot be found.
+                        '409':
+                            description: A role with that name already exists.
+                            
+                delete:
+                    summary: Delete a role
+                    tags:
+                        - Roles
+                    parameters:
+                      - name: id
+                        in: path
+                        required: true
+                        schema:
+                            type: integer
+                    responses:
+                        '204':
+                            description: Role deleted successfully
+                        '404':
+                            description: Role cannot be found
+
+            /api/permissions:
+                get:
+                    summary: Get a list of permissions
+                    tags:
+                        - Permissions
+                    responses:
+                        '200':
+                            description: Successful response
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: '#/components/schemas/Permissions'
+                post:
+                    summary: Create a new permission
+                    tags:
+                        - Permissions
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: '#/components/schemas/PermissionPayload'
+
+                    responses:
+                        '201':
+                            description: Permission created successfully
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: '#/components/schemas/Permission'
+                        '400':
+                            description: The name of the permission is missing.
+                        '409':
+                            description: A permission with that name already exists.
+
+            /api/permissions/{id}:
+                get:
+                    summary: Get a permission by ID
+                    tags:
+                        - Permissions
+                    parameters:
+                      - name: id
+                        in: path
+                        required: true
+                        schema:
+                            type: integer
+                    responses:
+                        '200':
+                            description: Successful response
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: '#/components/schemas/Permission'
+
+                put:
+                    summary: Update a permission
+                    tags:
+                        - Permissions
+                    parameters:
+                      - name: id
+                        in: path
+                        required: true
+                        schema:
+                            type: integer
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: '#/components/schemas/PermissionPayload'
+                    responses:
+                        '200':
+                            description: Permission updated successfully
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: '#/components/schemas/Permission'
+                        '400':
+                            description: One of the required parameter is missing, or the entity cannot be found.
+                        '409':
+                            description: A permission with that name already exists.
+                            
+                delete:
+                    summary: Delete a permission
+                    tags:
+                        - Permissions
+                    parameters:
+                      - name: id
+                        in: path
+                        required: true
+                        schema:
+                            type: integer
+                    responses:
+                        '204':
+                            description: Permission deleted successfully
+                        '404':
+                            description: Permission cannot be found
+
+            /api/admin:
+                get:
+                    summary: Get an admin access page
+                    description: It's not an API but for the case of this test it has been placed here
+                        to explain the detailed behaviour.
+                    tags:
+                        - Admin
+                    responses:
+                        '200':
+                            description: Display the page content
+                        '403':
+                            description: Forbidden access if role is not ROLE_ADMIN
+
+            
+            
     areas: # to filter documented areas
         path_patterns:
             - ^/api(?!/doc$) # Accepts routes under /api except /api/doc

@@ -22,13 +22,30 @@ class PermissionController extends AbstractController
     {
         $permissions = $entityManagerInterface->getRepository(Permission::class)->findAll();
         $serializedPermissions = [];
-        foreach ($permissions as $role) {
+        foreach ($permissions as $permission) {
             $serializedPermissions[] = [
-                'id' => $role->getId(),
-                'name' => $role->getName(),
+                'id' => $permission->getId(),
+                'name' => $permission->getName(),
             ];
         }
         return new JsonResponse($serializedPermissions);
+    }
+
+    #[Route('/{id}', name: 'app_permission_show', methods: ['GET'])]
+    public function getPermissionById($id, EntityManagerInterface $entityManagerInterface): JsonResponse
+    {
+        $permission = $entityManagerInterface->getRepository(Permission::class)->find($id);
+
+        if(! $permission) {
+            return new JsonResponse(['error' => 'Permission not found'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $serializedPermission = [
+            'id' => $permission->getId(),
+            'name' => $permission->getName(),
+        ];
+
+        return new JsonResponse($serializedPermission);
     }
 
     #[Route('', name: 'app_permission_create', methods: ['POST'])]
@@ -68,8 +85,8 @@ class PermissionController extends AbstractController
     {
         $permission = $entityManagerInterface->getRepository(Permission::class)->find($id);
 
-        if (! $permission) {
-            throw $this->createNotFoundException('Role not found.');
+        if(! $permission) {
+            return new JsonResponse(['error' => 'Permission not found'], Response::HTTP_BAD_REQUEST);
         }
  
         $data = $request->toArray();

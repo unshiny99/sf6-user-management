@@ -6,8 +6,6 @@ use App\Entity\User;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use OpenApi\Attributes as OA;
 use Src\Event\UserCreatedEvent;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -23,14 +21,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class UserController extends AbstractController
 {
     #[Route('', name: 'app_user_index', methods: ['GET'])]
-    #[OA\Response(
-        response: 200,
-        description: 'Returns the list of users',
-        content: new OA\JsonContent(
-            type: 'array',
-            items: new OA\Items(ref: new Model(type: User::class, groups: ['full']))
-        )
-    )]
     public function getUsers(EntityManagerInterface $entityManagerInterface): JsonResponse
     {
         $users = $entityManagerInterface->getRepository(User::class)->findAll();
@@ -48,11 +38,6 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
-    #[OA\Response(
-        response: 200,
-        description: 'Returns the matching user',
-        content: new Model(type: User::class, groups: ['full'])
-    )]
     public function getUserById($id, EntityManagerInterface $entityManagerInterface): JsonResponse
     {
         $user = $entityManagerInterface->getRepository(User::class)->find($id);
@@ -68,11 +53,6 @@ class UserController extends AbstractController
     }
 
     #[Route('', name: 'app_user_create', methods: ['POST'])]
-    #[OA\Response(
-        response: 201,
-        description: 'Returns the inserted entity',
-        content: new Model(type: User::class, groups: ['full'])
-    )]
     public function createUser(Request $request, EntityManagerInterface $entityManagerInterface, UserPasswordHasherInterface $passwordHasher, 
         ValidatorInterface $validator, EventDispatcherInterface $dispatcher): JsonResponse
     {
@@ -130,11 +110,6 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_user_update', methods: ['PUT'])]
-    #[OA\Response(
-        response: 200,
-        description: 'Returns the updated entity',
-        content: new Model(type: User::class, groups: ['full'])
-    )]
     public function updateUser(int $id, Request $request, EntityManagerInterface $entityManagerInterface, UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
         $user = $entityManagerInterface->getRepository(User::class)->find($id);
@@ -180,11 +155,6 @@ class UserController extends AbstractController
 
     #[Route('/{id}', name: 'app_user_delete', methods: ['DELETE'])]
     #[IsGranted('PERMISSION_DELETE')]
-    #[OA\Response(
-        response: 204,
-        description: 'Deletes the entity from its ID',
-        content: null
-    )]
     public function deleteUser(int $id, EntityManagerInterface $entityManagerInterface): JsonResponse
     {
         $user = $entityManagerInterface->getRepository(User::class)->find($id);

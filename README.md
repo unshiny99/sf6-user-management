@@ -10,6 +10,7 @@ System of management of users with roles and permissions
 4. API documentation is accessible at `https://127.0.0.1:8000/api/doc`
 
 ### General comments on the processing
+Behaviour :
 - If we update/delete a permission that was referenced in some roles, they will be consequently updated
 - If we update/delete a role that was referenced in some users, they will be consequently updated
 
@@ -20,3 +21,5 @@ Middleware secutiry implementation :
 Tests :
 - Functional tests does not work as expected : they all return a 200 code instead of the correct information. I have tried to fix this issue, but didn't manage to it.
 My supposition was that a configuration was missing.
+
+Documentation : all the documentation is in English. If it's a problem for you, please contact me.
