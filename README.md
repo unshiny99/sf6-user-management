@@ -5,9 +5,16 @@ System of management of users with roles and permissions
 ### Notes to test the project
 1. Launch the local server : `symfony serve -d` or `symfony server:start`
 2. Run `symfony console doctrine:fixtures:load`
-3. Use login api : `https://localhost:8000/api/login`
-4. Copy the returned token and use it in the Authorization request parameter of secured endpoints like so : `Authorization: Bearer <token>`
-5. API documentation is accessible at `https://127.0.0.1:8000/api/doc`
+3. Use login api : `https://localhost:8000/api/login`, using this payload :
+```json
+{
+    "login": "admin", 
+    "password": "admin"
+}
+```
+4. Copy the returned token and use it in the Authorization request parameter of secured endpoints like so : `Authorization: Bearer <token>` \
+5. API documentation is accessible at `https://127.0.0.1:8000/api/doc` \
+You can then create your own user if you want, or do other actions.
 6. Tests are runnable via `php bin/phpunit tests/Unit`
 
 ### General comments on the processing
