@@ -150,4 +150,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->roles->contains($role);
     }
+
+    public function __toString(): string
+    {
+        return $this->email;
+    }
 }

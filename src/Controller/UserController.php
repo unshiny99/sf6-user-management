@@ -8,7 +8,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Attributes as OA;
+use Src\Event\UserCreatedEvent;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -71,7 +73,8 @@ class UserController extends AbstractController
         description: 'Returns the inserted entity',
         content: new Model(type: User::class, groups: ['full'])
     )]
-    public function createUser(Request $request, EntityManagerInterface $entityManagerInterface, UserPasswordHasherInterface $passwordHasher, ValidatorInterface $validator): JsonResponse
+    public function createUser(Request $request, EntityManagerInterface $entityManagerInterface, UserPasswordHasherInterface $passwordHasher, 
+        ValidatorInterface $validator, EventDispatcherInterface $dispatcher): JsonResponse
     {
         $user = new User();
 
@@ -113,11 +116,16 @@ class UserController extends AbstractController
                 'roles' => $user->getRoles()
             ];
 
+            // get user from DB
+            //$userId = $user->getId();
+            //$userInstance = $entityManagerInterface->getRepository(User::class)->find($userId);
+            $dispatcher->dispatch(new UserCreatedEvent($user));
+
             return new JsonResponse($serializedUser, Response::HTTP_CREATED);
         } catch (UniqueConstraintViolationException $e) {
             return new JsonResponse(['error' => 'An user with that username or email already exists.'], Response::HTTP_CONFLICT);
         } catch (Exception $e) {
-            return new JsonResponse(['error' => 'Failed to create user'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return new JsonResponse(['error' => 'Failed to create user : ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
