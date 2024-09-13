@@ -88,6 +88,11 @@ class Role
         })->toArray();
     }
 
+    public function getPermissionsCollection(): Collection
+    {
+        return $this->permissions;
+    }
+
     /**
      * @param array $permissions
      * @return void
