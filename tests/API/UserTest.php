@@ -3,9 +3,6 @@
 namespace App\Tests\API;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
-use ApiPlatform\Symfony\Bundle\Test\Client;
-use phpDocumentor\Reflection\Types\Void_;
-use Symfony\Bundle\MakerBundle\Maker\LegacyApiTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserTest extends ApiTestCase

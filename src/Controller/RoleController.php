@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Role;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
