@@ -60,11 +60,17 @@ class UserController extends AbstractController
 
         $data = $request->toArray();
         
-        $user->setEmail($data['email']);
-        $user->setUsername($data['username']);
-        $plainPassword = $data['password'];
-        $encodedPassword = $passwordHasher->hashPassword($user, $plainPassword);
-        $user->setPassword($encodedPassword);
+        if(isset($data['email'], $data['password'])) {
+            $user->setEmail($data['email']);
+        }
+        if(isset($data['username'])) {
+            $user->setUsername($data['username']);
+        }
+        if(isset($data['password'])) {
+            $plainPassword = $data['password'];
+            $encodedPassword = $passwordHasher->hashPassword($user, $plainPassword);
+            $user->setPassword($encodedPassword);
+        }
 
         // check if roles are provided
         if (! empty($data['roles'])) {

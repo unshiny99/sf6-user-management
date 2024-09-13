@@ -17,6 +17,9 @@ Middleware secutiry implementation :
 - To see the restricted access API middleware, you need to have a user with 'ROLE_ADMIN' role
 - To see a custom restricted action, try to delete an user. It should cause a forbidden access, except if one of the roles has 'PERMISSION_DELETE' permission.
 
+Tests :
+- Functional tests does not work as expected : they all return a 200 code instead of the correct information. I have tried to fix this issue, but didn't manage to it.
+My supposition was that a configuration was missing.
+
 ## TODO temp
 - Swagger : coder les docs pour avoir les noms de fcts, descriptions...
-- Test unitaires / intégration ?
