@@ -96,9 +96,6 @@ class UserController extends AbstractController
                 'roles' => $user->getRoles()
             ];
 
-            // get user from DB
-            //$userId = $user->getId();
-            //$userInstance = $entityManagerInterface->getRepository(User::class)->find($userId);
             $dispatcher->dispatch(new UserCreatedEvent($user));
 
             return new JsonResponse($serializedUser, Response::HTTP_CREATED);
