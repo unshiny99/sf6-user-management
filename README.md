@@ -2,21 +2,30 @@
 
 System of management of users with roles and permissions
 
+### Requirements
+1. PHP 8
+2. Composer
+3. PostgresSQL
+3. Symfony CLI
+4. A REST client (like Postman)
+
 ### Notes to test the project
-1. Launch the local server : `symfony serve -d` or `symfony server:start`
-2. Run `symfony console doctrine:migrations:migrate`
-3. Run `symfony console doctrine:fixtures:load`
-4. Use login api : `https://localhost:8000/api/login`, using this payload and credentials :
+1. Launch the local server : `symfony server:start`
+2. Run `composer install`
+3. In the `.env`, change DATABASE_URL with a working local Postgres' DSN
+4. Run `symfony console doctrine:migrations:migrate`
+5. Run `symfony console doctrine:fixtures:load`
+6. Use login api : `http://localhost:8000/api/login`, using this payload and credentials :
 ```json
 {
     "login": "admin", 
     "password": "admin"
 }
 ```
-5. Copy the returned token and use it in the Authorization request parameter of secured endpoints like so : `Authorization: Bearer <token>` \
-6. API documentation is accessible at `https://127.0.0.1:8000/api/doc` \
+6. Copy the returned token and use it in the Authorization request parameter of secured endpoints like so : `Authorization: Bearer <token>` \
+7. API documentation is accessible at `http://127.0.0.1:8000/api/doc` \
 You can then create your own user if you want, or do other actions.
-7. Tests are runnable via `php bin/phpunit` (please clean your test database after each global test)
+8. Tests are runnable via `php bin/phpunit` (please clean your test database after each global test)
 
 ### General comments on the processing
 #### Behaviour
